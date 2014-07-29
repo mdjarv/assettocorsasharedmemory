@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace AssettoCorsaSharedMemory
 {
-    enum AC_STATUS
+    public enum AC_STATUS
     {
         AC_OFF = 0,
         AC_REPLAY = 1,
@@ -15,7 +15,7 @@ namespace AssettoCorsaSharedMemory
         AC_PAUSE = 3
     }
 
-    enum AC_SESSION_TYPE
+    public enum AC_SESSION_TYPE
     {
         AC_UNKNOWN = -1,
         AC_PRACTICE = 0,
@@ -42,8 +42,8 @@ namespace AssettoCorsaSharedMemory
     public struct Graphics
     {
         public int PacketId;
-        AC_STATUS Status;
-        AC_SESSION_TYPE Session;
+        public AC_STATUS Status;
+        public AC_SESSION_TYPE Session;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
         public String CurrentTime;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]

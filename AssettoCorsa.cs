@@ -12,7 +12,7 @@ using System.Timers;
 namespace AssettoCorsaSharedMemory
 {
     public delegate void PhysicsUpdatedHandler(object sender, PhysicsEventArgs e);
-    public delegate void GraphicsUpdatedHandler(object sender, EventArgs e);
+    public delegate void GraphicsUpdatedHandler(object sender, GraphicsEventArgs e);
     public delegate void StaticInfoUpdatedHandler(object sender, StaticInfoEventArgs e);
 
     public class AssettoCorsaNotStartedException : Exception
@@ -23,10 +23,105 @@ namespace AssettoCorsaSharedMemory
         }
     }
 
+    enum AC_MEMORY_STATUS { DISCONNECTED, CONNECTING, CONNECTED }
+
     public class AssettoCorsa
     {
-        private bool running = false;
-        public bool IsRunning { get { return running; } }
+        private Timer sharedMemoryRetryTimer;
+        private AC_MEMORY_STATUS memoryStatus = AC_MEMORY_STATUS.DISCONNECTED;
+        public bool IsRunning { get { return (memoryStatus == AC_MEMORY_STATUS.CONNECTED); } }
+
+        public AssettoCorsa()
+        {
+            sharedMemoryRetryTimer = new Timer(2000);
+            sharedMemoryRetryTimer.AutoReset = true;
+            sharedMemoryRetryTimer.Elapsed += sharedMemoryRetryTimer_Elapsed;
+
+            physicsTimer = new Timer();
+            physicsTimer.AutoReset = true;
+            physicsTimer.Elapsed += physicsTimer_Elapsed;
+            PhysicsInterval = 10;
+
+            graphicsTimer = new Timer();
+            graphicsTimer.AutoReset = true;
+            graphicsTimer.Elapsed += graphicsTimer_Elapsed;
+            GraphicsInterval = 1000;
+
+            staticInfoTimer = new Timer();
+            staticInfoTimer.AutoReset = true;
+            staticInfoTimer.Elapsed += staticInfoTimer_Elapsed;
+            StaticInfoInterval = 1000;
+
+            Stop();
+        }
+
+        /// <summary>
+        /// Connect to the shared memory and start the update timers
+        /// </summary>
+        public void Start()
+        {
+            sharedMemoryRetryTimer.Start();
+        }
+
+        void sharedMemoryRetryTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            ConnectToSharedMemory();
+        }
+
+        private bool ConnectToSharedMemory()
+        {
+            try
+            {
+                memoryStatus = AC_MEMORY_STATUS.CONNECTING;
+                // Connect to shared memory
+                physicsMMF = MemoryMappedFile.OpenExisting("Local\\acpmf_physics");
+                graphicsMMF = MemoryMappedFile.OpenExisting("Local\\acpmf_graphics");
+                staticInfoMMF = MemoryMappedFile.OpenExisting("Local\\acpmf_static");
+
+                // Start the timers if listeners are available
+                if (staticInfoUpdated != null && staticInfoUpdated.GetInvocationList().Length > 0)
+                {
+                    staticInfoTimer.Start();
+                    ProcessStaticInfo();
+                }
+                if (graphicsUpdated != null && graphicsUpdated.GetInvocationList().Length > 0)
+                {
+                    graphicsTimer.Start();
+                    ProcessGraphics();
+                }
+                if (physicsUpdated != null && physicsUpdated.GetInvocationList().Length > 0)
+                {
+                    physicsTimer.Start();
+                    ProcessPhysics();
+                }
+
+                // Stop retry timer
+                sharedMemoryRetryTimer.Stop();
+                memoryStatus = AC_MEMORY_STATUS.CONNECTED;
+                return true;
+            }
+            catch (FileNotFoundException)
+            {
+                staticInfoTimer.Stop();
+                graphicsTimer.Stop();
+                physicsTimer.Stop();
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Stop the timers and dispose of the shared memory handles
+        /// </summary>
+        public void Stop()
+        {
+            memoryStatus = AC_MEMORY_STATUS.DISCONNECTED;
+            sharedMemoryRetryTimer.Stop();
+
+            // Stop the timers
+            physicsTimer.Stop();
+            graphicsTimer.Stop();
+            staticInfoTimer.Stop();
+        }
 
         /// <summary>
         /// Interval for physics updates in milliseconds
@@ -148,81 +243,6 @@ namespace AssettoCorsaSharedMemory
             }
         }
 
-        public AssettoCorsa()
-        {
-            physicsTimer = new Timer();
-            physicsTimer.AutoReset = true;
-            physicsTimer.Elapsed += physicsTimer_Elapsed;
-            PhysicsInterval = 10;
-
-            graphicsTimer = new Timer();
-            graphicsTimer.AutoReset = true;
-            graphicsTimer.Elapsed += graphicsTimer_Elapsed;
-            GraphicsInterval = 10000;
-
-            staticInfoTimer = new Timer();
-            staticInfoTimer.AutoReset = true;
-            staticInfoTimer.Elapsed += staticInfoTimer_Elapsed;
-            StaticInfoInterval = 2000;
-        }
-
-        /// <summary>
-        /// Connect to the shared memory and start the update timers
-        /// </summary>
-        public void Start()
-        {
-            try
-            {
-                // Connect to shared memory
-                physicsMMF = MemoryMappedFile.OpenExisting("Local\\acpmf_physics");
-                graphicsMMF = MemoryMappedFile.OpenExisting("Local\\acpmf_graphics");
-                staticInfoMMF = MemoryMappedFile.OpenExisting("Local\\acpmf_static");
-
-                // Start the timers if listeners are available
-                if (staticInfoUpdated != null && staticInfoUpdated.GetInvocationList().Length > 0)
-                {
-                    staticInfoTimer.Start();
-                    ProcessStaticInfo();
-                }
-                if (graphicsUpdated != null && graphicsUpdated.GetInvocationList().Length > 0)
-                {
-                    graphicsTimer.Start();
-                    ProcessGraphics();
-                }
-                if (physicsUpdated != null && physicsUpdated.GetInvocationList().Length > 0)
-                {
-                    physicsTimer.Start();
-                    ProcessPhysics();
-                }
-
-                running = true;
-            }
-            catch (FileNotFoundException)
-            { }
-        }
-
-        /// <summary>
-        /// Stop the timers and dispose of the shared memory handles
-        /// </summary>
-        public void Stop()
-        {
-            running = false;
-
-            // Stop the timers
-            physicsTimer.Stop();
-            graphicsTimer.Stop();
-            staticInfoTimer.Stop();
-
-            try { physicsMMF.Dispose(); }
-            catch (NullReferenceException) { }
-            
-            try { graphicsMMF.Dispose(); }
-            catch (NullReferenceException) { }
-
-            try { staticInfoMMF.Dispose(); }
-            catch (NullReferenceException) { }
-        }
-
         public virtual void OnPhysicsUpdated(PhysicsEventArgs e)
         {
             if (physicsUpdated != null)
@@ -264,7 +284,7 @@ namespace AssettoCorsaSharedMemory
 
         private void ProcessPhysics()
         {
-            if (!running)
+            if (memoryStatus == AC_MEMORY_STATUS.DISCONNECTED)
                 return;
 
             try
@@ -278,8 +298,9 @@ namespace AssettoCorsaSharedMemory
 
         private void ProcessGraphics()
         {
-            if (!running)
+            if (memoryStatus == AC_MEMORY_STATUS.DISCONNECTED)
                 return;
+
             try
             {
                 Graphics graphics = ReadGraphics();
@@ -291,8 +312,9 @@ namespace AssettoCorsaSharedMemory
 
         private void ProcessStaticInfo()
         {
-            if (!running)
+            if (memoryStatus == AC_MEMORY_STATUS.DISCONNECTED)
                 return;
+
             try
             {
                 StaticInfo staticInfo = ReadStaticInfo();
@@ -308,7 +330,7 @@ namespace AssettoCorsaSharedMemory
         /// <returns>A Physics object representing the current status, or null if not available</returns>
         public Physics ReadPhysics()
         {
-            if (!running || physicsMMF == null)
+            if (memoryStatus == AC_MEMORY_STATUS.DISCONNECTED || physicsMMF == null)
                 throw new AssettoCorsaNotStartedException();
 
             using (var stream = physicsMMF.CreateViewStream())
@@ -327,7 +349,7 @@ namespace AssettoCorsaSharedMemory
 
         public Graphics ReadGraphics()
         {
-            if (!running)
+            if (memoryStatus == AC_MEMORY_STATUS.DISCONNECTED || graphicsMMF == null)
                 throw new AssettoCorsaNotStartedException();
 
             using (var stream = graphicsMMF.CreateViewStream())
@@ -346,7 +368,7 @@ namespace AssettoCorsaSharedMemory
 
         public StaticInfo ReadStaticInfo()
         {
-            if (!running)
+            if (memoryStatus == AC_MEMORY_STATUS.DISCONNECTED || staticInfoMMF == null)
                 throw new AssettoCorsaNotStartedException();
 
             using (var stream = staticInfoMMF.CreateViewStream())
