@@ -14,6 +14,7 @@ namespace AssettoCorsaSharedMemory
     public delegate void PhysicsUpdatedHandler(object sender, PhysicsEventArgs e);
     public delegate void GraphicsUpdatedHandler(object sender, GraphicsEventArgs e);
     public delegate void StaticInfoUpdatedHandler(object sender, StaticInfoEventArgs e);
+    public delegate void GameStatusChangedHandler(object sender, GameStatusEventArgs e);
 
     public class AssettoCorsaNotStartedException : Exception
     {
@@ -30,6 +31,25 @@ namespace AssettoCorsaSharedMemory
         private Timer sharedMemoryRetryTimer;
         private AC_MEMORY_STATUS memoryStatus = AC_MEMORY_STATUS.DISCONNECTED;
         public bool IsRunning { get { return (memoryStatus == AC_MEMORY_STATUS.CONNECTED); } }
+
+        private AC_STATUS gameStatus = AC_STATUS.AC_OFF;
+
+        public event GameStatusChangedHandler GameStatusChanged;
+        public virtual void OnGameStatusChanged(GameStatusEventArgs e)
+        {
+            if (GameStatusChanged != null)
+            {
+                GameStatusChanged(this, e);
+            }
+        }
+
+        public static readonly Dictionary<AC_STATUS, string> StatusNameLookup = new Dictionary<AC_STATUS, string>
+        {
+            { AC_STATUS.AC_OFF, "Off" },
+            { AC_STATUS.AC_LIVE, "Live" },
+            { AC_STATUS.AC_PAUSE, "Pause" },
+            { AC_STATUS.AC_REPLAY, "Replay" },
+        };
 
         public AssettoCorsa()
         {
@@ -78,22 +98,15 @@ namespace AssettoCorsaSharedMemory
                 graphicsMMF = MemoryMappedFile.OpenExisting("Local\\acpmf_graphics");
                 staticInfoMMF = MemoryMappedFile.OpenExisting("Local\\acpmf_static");
 
-                // Start the timers if listeners are available
-                if (staticInfoUpdated != null && staticInfoUpdated.GetInvocationList().Length > 0)
-                {
-                    staticInfoTimer.Start();
-                    ProcessStaticInfo();
-                }
-                if (graphicsUpdated != null && graphicsUpdated.GetInvocationList().Length > 0)
-                {
-                    graphicsTimer.Start();
-                    ProcessGraphics();
-                }
-                if (physicsUpdated != null && physicsUpdated.GetInvocationList().Length > 0)
-                {
-                    physicsTimer.Start();
-                    ProcessPhysics();
-                }
+                // Start the timers
+                staticInfoTimer.Start();
+                ProcessStaticInfo();
+
+                graphicsTimer.Start();
+                ProcessGraphics();
+
+                physicsTimer.Start();
+                ProcessPhysics();
 
                 // Stop retry timer
                 sharedMemoryRetryTimer.Stop();
@@ -176,94 +189,47 @@ namespace AssettoCorsaSharedMemory
         Timer graphicsTimer;
         Timer staticInfoTimer;
 
-        private event PhysicsUpdatedHandler physicsUpdated;
-        private event GraphicsUpdatedHandler graphicsUpdated;
-        private event StaticInfoUpdatedHandler staticInfoUpdated;
-
         /// <summary>
         /// Represents the method that will handle the physics update events
         /// </summary>
-        public event PhysicsUpdatedHandler PhysicsUpdated
-        {
-            add
-            {
-                physicsUpdated += value;
-                physicsTimer.Start();
-                ProcessPhysics(); // Start with a new tick
-            }
-            remove
-            {
-                physicsUpdated -= value;
-                if (physicsUpdated.GetInvocationList().Length == 0)
-                {
-                    physicsTimer.Stop();
-                }
-            }
-        }
+        public event PhysicsUpdatedHandler PhysicsUpdated;
 
         /// <summary>
         /// Represents the method that will handle the graphics update events
         /// </summary>
-        public event GraphicsUpdatedHandler GraphicsUpdated
-        {
-            add
-            {
-                graphicsUpdated += value;
-                graphicsTimer.Start();
-                ProcessGraphics(); // Start with a new tick
-            }
-            remove
-            {
-                graphicsUpdated -= value;
-                if (graphicsUpdated.GetInvocationList().Length == 0)
-                {
-                    graphicsTimer.Stop();
-                }
-            }
-        }
+        public event GraphicsUpdatedHandler GraphicsUpdated;
 
         /// <summary>
         /// Represents the method that will handle the static info update events
         /// </summary>
-        public event StaticInfoUpdatedHandler StaticInfoUpdated
-        {
-            add
-            {
-                staticInfoUpdated += value;
-                staticInfoTimer.Start();
-                ProcessStaticInfo(); // Start with a new tick
-            }
-            remove
-            {
-                staticInfoUpdated -= value;
-                if (staticInfoUpdated.GetInvocationList().Length == 0)
-                {
-                    staticInfoTimer.Stop();
-                }
-            }
-        }
+        public event StaticInfoUpdatedHandler StaticInfoUpdated;
 
         public virtual void OnPhysicsUpdated(PhysicsEventArgs e)
         {
-            if (physicsUpdated != null)
+            if (PhysicsUpdated != null)
             {
-                physicsUpdated(this, e);
+                PhysicsUpdated(this, e);
             }
         }
 
         public virtual void OnGraphicsUpdated(GraphicsEventArgs e)
         {
-            if (graphicsUpdated != null)
+            if (GraphicsUpdated != null)
             {
-                graphicsUpdated(this, e);
+                GraphicsUpdated(this, e);
+                if (gameStatus != e.Graphics.Status)
+                {
+                    gameStatus = e.Graphics.Status;
+                    GameStatusChanged(this, new GameStatusEventArgs(gameStatus));
+                }
             }
         }
 
         public virtual void OnStaticInfoUpdated(StaticInfoEventArgs e)
         {
-            if (staticInfoUpdated != null)
+            if (StaticInfoUpdated != null)
             {
-                staticInfoUpdated(this, e);
+                StaticInfoUpdated(this, e);
             }
         }
 
