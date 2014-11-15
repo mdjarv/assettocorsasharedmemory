@@ -17,7 +17,7 @@ namespace AssettoCorsaSharedMemory
         public Physics Physics { get; private set; }
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
     [Serializable]
     public struct Physics
     {

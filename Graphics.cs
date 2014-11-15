@@ -37,7 +37,7 @@ namespace AssettoCorsaSharedMemory
         public Graphics Graphics { get; private set; }
     }
 
-    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
     [Serializable]
     public struct Graphics
     {
