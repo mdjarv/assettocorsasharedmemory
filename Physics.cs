@@ -70,7 +70,7 @@ namespace AssettoCorsaSharedMemory
 		public float KersCharge;
 		public float KersInput;
 		public int AutoShifterOn;
-		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
 		public float[] RideHeight;
 
 		// since 1.5
