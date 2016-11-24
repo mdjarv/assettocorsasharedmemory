@@ -97,5 +97,18 @@ namespace AssettoCorsaSharedMemory
 		public int DrsEnabled;
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
 		public float[] BrakeTemp;
+
+		// since 1.10
+    	public float Clutch;
+
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public float[] TyreTempI;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public float[] TyreTempM;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public float[] TyreTempO;
+
+		// since 1.10.2
+    	public int IsAIControlled;
     }
 }
