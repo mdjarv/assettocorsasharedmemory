@@ -7,6 +7,17 @@ using System.Threading.Tasks;
 
 namespace AssettoCorsaSharedMemory
 {
+	public enum AC_FLAG_TYPE
+	{
+		AC_NO_FLAG = 0,
+		AC_BLUE_FLAG = 1,
+		AC_YELLOW_FLAG = 2,
+		AC_BLACK_FLAG = 3,
+		AC_WHITE_FLAG = 4,
+		AC_CHECKERED_FLAG = 5,
+		AC_PENALTY_FLAG = 6
+	}
+
     public enum AC_STATUS
     {
         AC_OFF = 0,
@@ -70,5 +81,13 @@ namespace AssettoCorsaSharedMemory
         public float NormalizedCarPosition;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
         public float[] CarCoordinates;
+
+		public float PenaltyTime;
+		public AC_FLAG_TYPE Flag;
+		public int IdealLineOn;
+
+		// since 1.5
+		public int IsInPitLane;
+		public float SurfaceGrip;
     }
 }

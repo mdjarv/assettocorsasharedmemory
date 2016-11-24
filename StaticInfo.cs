@@ -51,5 +51,31 @@ namespace AssettoCorsaSharedMemory
         public float[] SuspensionMaxTravel;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public float[] TyreRadius;
+
+		// since 1.5
+		public float MaxTurboBoost;
+		public float Deprecated1; // AirTemp since 1.6 in physic
+		public float Deprecated2; // RoadTemp since 1.6 in physic
+		public int PenaltiesEnabled;
+		public float AidFuelRate;
+		public float AidTireRate;
+		public float AidMechanicalDamage;
+		public int AidAllowTyreBlankets;
+		public float AidStability;
+		public int AidAutoClutch;
+		public int AidAutoBlip;
+
+		// since 1.7.1
+		public int HasDRS;
+		public int HasERS;
+		public int HasKERS;
+		public float KersMaxJoules;
+		public int EngineBrakeSettingsCount;
+		public int ErsPowerControllerCount;
+
+		// since 1.7.2
+		public float TrackSPlineLength;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
+		public string TrackConfiguration;
     }
 }

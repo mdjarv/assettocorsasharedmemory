@@ -66,5 +66,36 @@ namespace AssettoCorsaSharedMemory
         public int NumberOfTyresOut;
         public int PitLimiterOn;
         public float Abs;
+
+		public float KersCharge;
+		public float KersInput;
+		public int AutoShifterOn;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
+		public float[] RideHeight;
+
+		// since 1.5
+		public float TurboBoost;
+		public float Ballast;
+		public float AirDensity;
+
+		// since 1.6
+		public float AirTemp;
+		public float RoadTemp;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+		public float[] LocalAngularVelocity;
+		public float FinalFF;
+
+		// since 1.7
+		public float PerformanceMeter;
+		public int EngineBrake;
+		public int ErsRecoveryLevel;
+		public int ErsPowerLevel;
+		public int ErsHeatCharging;
+		public int ErsisCharging;
+		public float KersCurrentKJ;
+		public int DrsAvailable;
+		public int DrsEnabled;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public float[] BrakeTemp;
     }
 }
