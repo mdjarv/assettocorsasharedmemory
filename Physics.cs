@@ -110,5 +110,14 @@ namespace AssettoCorsaSharedMemory
 
 		// since 1.10.2
     	public int IsAIControlled;
+
+		// since 1.11
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
+		public float[] TyreContactPoint;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
+		public float[] TyreContactNormal;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
+		public float[] TyreContactHeading;
+		public float BrakeBias;
     }
 }
