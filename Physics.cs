@@ -17,6 +17,14 @@ namespace AssettoCorsaSharedMemory
         public Physics Physics { get; private set; }
     }
 
+	[StructLayout(LayoutKind.Sequential)]
+	public struct Coordinates
+	{
+		public float X;
+		public float Y;
+		public float Z;
+	}
+
     [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
     [Serializable]
     public struct Physics
@@ -110,5 +118,14 @@ namespace AssettoCorsaSharedMemory
 
 		// since 1.10.2
     	public int IsAIControlled;
+
+		// since 1.11
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public Coordinates[] TyreContactPoint;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public Coordinates[] TyreContactNormal;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public Coordinates[] TyreContactHeading;
+		public float BrakeBias;
     }
 }
