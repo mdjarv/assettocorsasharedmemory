@@ -127,5 +127,9 @@ namespace AssettoCorsaSharedMemory
 		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
 		public Coordinates[] TyreContactHeading;
 		public float BrakeBias;
+		
+		// since 1.12
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
+		public float[] LocalVelocity;
     }
 }
