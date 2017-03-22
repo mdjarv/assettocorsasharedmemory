@@ -82,12 +82,12 @@ namespace AssettoCorsaSharedMemory
 		public float ErsMaxJ;
 
 		// since 1.13
-		public int​​ IsTimedRace;
-		public int​​ HasExtraLap;
+		public int IsTimedRace;
+		public int HasExtraLap;
 		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
 		public String CarSkin;
-		public int​​ ReversedGridPositions;
-		public int​​ PitWindowStart;
-		public int​​ PitWindowEnd;
+		public int ReversedGridPositions;
+		public int PitWindowStart;
+		public int PitWindowEnd;
 	}
 }
