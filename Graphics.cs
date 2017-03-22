@@ -91,6 +91,6 @@ namespace AssettoCorsaSharedMemory
 		public float SurfaceGrip;
 		
 		// since 1.13
-		public int​​ MandatoryPitDone;
+		public int MandatoryPitDone;
 	}
 }
