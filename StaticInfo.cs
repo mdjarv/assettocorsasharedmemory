@@ -7,50 +7,50 @@ using System.Threading.Tasks;
 
 namespace AssettoCorsaSharedMemory
 {
-    public class StaticInfoEventArgs : EventArgs
-    {
-        public StaticInfoEventArgs(StaticInfo staticInfo)
-        {
-            this.StaticInfo = staticInfo;
-        }
+	public class StaticInfoEventArgs : EventArgs
+	{
+		public StaticInfoEventArgs(StaticInfo staticInfo)
+		{
+			this.StaticInfo = staticInfo;
+		}
 
-        public StaticInfo StaticInfo { get; private set; }
-    }
+		public StaticInfo StaticInfo { get; private set; }
+	}
 
-    [StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
-    [Serializable]
-    public struct StaticInfo
-    {
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
-        public String SMVersion;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
-        public String ACVersion;
+	[StructLayout(LayoutKind.Sequential, Pack = 4, CharSet = CharSet.Unicode)]
+	[Serializable]
+	public struct StaticInfo
+	{
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
+		public String SMVersion;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
+		public String ACVersion;
 
-        // session static info
-        public int NumberOfSessions;
-        public int NumCars;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
-        public String CarModel;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
-        public String Track;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
-        public String PlayerName;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
-        public String PlayerSurname;
-        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
-        public String PlayerNick;
+		// session static info
+		public int NumberOfSessions;
+		public int NumCars;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+		public String CarModel;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+		public String Track;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+		public String PlayerName;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+		public String PlayerSurname;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+		public String PlayerNick;
 
-        public int SectorCount;
+		public int SectorCount;
 
-        // car static info
-        public float MaxTorque;
-        public float MaxPower;
-        public int MaxRpm;
-        public float MaxFuel;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public float[] SuspensionMaxTravel;
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public float[] TyreRadius;
+		// car static info
+		public float MaxTorque;
+		public float MaxPower;
+		public int MaxRpm;
+		public float MaxFuel;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public float[] SuspensionMaxTravel;
+		[MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+		public float[] TyreRadius;
 
 		// since 1.5
 		public float MaxTurboBoost;
@@ -79,6 +79,15 @@ namespace AssettoCorsaSharedMemory
 		public string TrackConfiguration;
 
 		// since 1.10.2
-    	public float ErsMaxJ;
-    }
+		public float ErsMaxJ;
+
+		// since 1.13
+		public int​​ IsTimedRace;
+		public int​​ HasExtraLap;
+		[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
+		public String CarSkin;
+		public int​​ ReversedGridPositions;
+		public int​​ PitWindowStart;
+		public int​​ PitWindowEnd;
+	}
 }
