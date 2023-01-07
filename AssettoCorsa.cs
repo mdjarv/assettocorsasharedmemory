@@ -220,7 +220,10 @@ namespace AssettoCorsaSharedMemory
                 if (gameStatus != e.Graphics.Status)
                 {
                     gameStatus = e.Graphics.Status;
-                    GameStatusChanged(this, new GameStatusEventArgs(gameStatus));
+                    if (GameStatusChanged != null)
+                    {
+                        GameStatusChanged(this, new GameStatusEventArgs(gameStatus));
+                    }
                 }
             }
         }
