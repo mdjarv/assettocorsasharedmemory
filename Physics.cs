@@ -186,6 +186,7 @@ namespace AssettoCorsaSharedMemory
         /// <summary>
         /// Car damage: front 0, rear 1, left 2, right 3, centre 4
         /// </summary>
+        [MarshalAs (UnmanagedType.ByValArray, SizeConst = 5)]
         public float[] CarDamage;
 
         /// <summary>
@@ -438,7 +439,7 @@ namespace AssettoCorsaSharedMemory
         public float[] LocalVelocity;
 
         // since ???
-
+        
         /// <summary>
         /// Not shown in ACC
         /// <para>
@@ -454,7 +455,7 @@ namespace AssettoCorsaSharedMemory
         /// </para>
         /// </summary>
         public int P2PStatus;
-
+        
         /// <summary>
         /// Maximum engine rpm
         /// <para>
@@ -462,6 +463,24 @@ namespace AssettoCorsaSharedMemory
         /// </para>
         /// </summary>
         public float CurrentMaxRPM;
+        
+        /// <summary>
+        /// Not shown in ACC
+        /// <para>
+        /// NOT AVAILABLE IN ACC
+        /// </para>
+        /// </summary>
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public float[] MZ;
+        
+        /// <summary>
+        /// Not shown in ACC
+        /// <para>
+        /// NOT AVAILABLE IN ACC
+        /// </para>
+        /// </summary>
+        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+        public float[] FX;
 
         /// <summary>
         /// Not shown in ACC
@@ -470,32 +489,14 @@ namespace AssettoCorsaSharedMemory
         /// </para>
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public float MZ;
-
-        /// <summary>
-        /// Not shown in ACC
-        /// <para>
-        /// NOT AVAILABLE IN ACC
-        /// </para>
-        /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public float FX;
-
-        /// <summary>
-        /// Not shown in ACC
-        /// <para>
-        /// NOT AVAILABLE IN ACC
-        /// </para>
-        /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public float FY;
+        public float[] FY;
 
         /// <summary>
         /// Tyre slip ratio [FL, FR, RL, RR] in radians
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         public float[] SlipRatio;
-
+        
         /// <summary>
         /// Tyre slip angle [FL, FR, RL, RR]
         /// </summary>
@@ -525,8 +526,8 @@ namespace AssettoCorsaSharedMemory
         /// </para>
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public float SuspensionDamage;
-
+        public float[] SuspensionDamage;
+        
         /// <summary>
         /// Tyres core temperatures [FL, FR, RL, RR]
         /// <para>
@@ -534,7 +535,7 @@ namespace AssettoCorsaSharedMemory
         /// </para>
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-        public float TyreTemp;
+        public float[] TyreTemp;
 
         /// <summary>
         /// Water Temperature
@@ -604,5 +605,7 @@ namespace AssettoCorsaSharedMemory
         /// Vibrations sent to the FFB, could be used for motion rigs
         /// </summary>
         public float ABSVibrations;
+
+        
     }
 }

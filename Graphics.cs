@@ -205,6 +205,9 @@ namespace AssettoCorsaSharedMemory
 
         /// <summary>
         /// Replay multiplier
+        /// <para>
+        /// NOT AVAILABLE IN ACC
+        /// </para>
         /// </summary>
         public float ReplayTimeMultiplier;
 
@@ -240,7 +243,7 @@ namespace AssettoCorsaSharedMemory
         /// </para>
         /// </summary>
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 60)]
-        public int CarID;
+        public int[] CarID;
 
         /// <summary>
         /// Player Car ID
@@ -295,7 +298,7 @@ namespace AssettoCorsaSharedMemory
         public int MandatoryPitDone;
 
         // since ???
-
+        
         /// <summary>
         /// Wind speed in m/s
         /// </summary>
@@ -337,7 +340,7 @@ namespace AssettoCorsaSharedMemory
         /// Current engine map
         /// </summary>
         public int EngineMap;
-
+        
         /// <summary>
         /// ABS level
         /// </summary>
@@ -377,7 +380,7 @@ namespace AssettoCorsaSharedMemory
         /// Time the driver is allowed to drive/race (ms)
         /// </summary>
         public int DriverStintTotalTimeLeft;
-
+        
         /// <summary>
         /// Time the driver is allowed to drive/stint (ms)
         /// </summary>
@@ -397,29 +400,29 @@ namespace AssettoCorsaSharedMemory
         /// Used fuel since last time refueling
         /// </summary>
         public float UsedFuel;
-
+        
         /// <summary>
         /// Delta time in text
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 15)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
         public String DeltaLapTime;
-
+        
         /// <summary>
         /// Delta time in milliseconds
         /// </summary>
         public int IDeltaLapTime;
-
+        
         /// <summary>
         /// Estimated lap time in text
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 15)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 15)]
         public String EstimatedLapTime;
 
         /// <summary>
         /// Estimated lap time in milliseconds
         /// </summary>
         public int iEstimatedLapTime;
-
+        
         /// <summary>
         /// Delta positive (1) or negative (0)
         /// </summary>
@@ -439,11 +442,11 @@ namespace AssettoCorsaSharedMemory
         /// Laps possible with current fuel level
         /// </summary>
         public float FuelEstimatedLaps;
-
+        
         /// <summary>
         /// Status of track
         /// </summary>
-        [MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
         public String TrackStatus;
 
         /// <summary>
@@ -455,7 +458,7 @@ namespace AssettoCorsaSharedMemory
         /// Time of day in seconds
         /// </summary>
         public float Clock;
-
+        
         /// <summary>
         /// Is Blinker left on
         /// </summary>
@@ -575,5 +578,7 @@ namespace AssettoCorsaSharedMemory
         /// Distance in ms to car behind
         /// </summary>
         public int GapBehind;
+
+        
     }
 }

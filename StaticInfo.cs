@@ -250,7 +250,7 @@ namespace AssettoCorsaSharedMemory
         /// </para>
         /// </summary>
         [MarshalAs (UnmanagedType.ByValTStr, SizeConst = 15)]
-        public string TrackConfiguration;
+        public String TrackConfiguration;
 
         // since 1.10.2
 
@@ -308,7 +308,7 @@ namespace AssettoCorsaSharedMemory
         public int PitWindowEnd;
 
         //Since ???
-
+        
         /// <summary>
         /// If is a multiplayer session
         /// </summary>
@@ -325,5 +325,7 @@ namespace AssettoCorsaSharedMemory
         /// </summary>
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
         public String WetTyresName;
+
+        
     }
 }
