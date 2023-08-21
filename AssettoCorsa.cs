@@ -198,10 +198,10 @@ namespace AssettoCorsaSharedMemory
             ferrari_488_challenge_evo = 26,
             lamborghini_huracan_st_evo2 = 29,
             porsche_992_gt3_cup = 28,
-            ferrari_296_gt3, //int value?
-            porsche_992_gt3_r, //int value?
-            lamborghini_huracan_gt3_evo2, //int value?
-            mclaren_720s_gt3_evo //int value?
+            ferrari_296_gt3 = 100, //What is the model ID?
+            porsche_992_gt3_r = 101, //What is the model ID?
+            lamborghini_huracan_gt3_evo2 = 102, //What is the model ID?
+            mclaren_720s_gt3_evo = 103 //What is the model ID?
         };
 
         public AssettoCorsa()
